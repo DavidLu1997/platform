@@ -4,6 +4,7 @@
 import ViewImageModal from './view_image.jsx';
 import FileAttachment from './file_attachment.jsx';
 import Constants from 'utils/constants.jsx';
+import * as Utils from 'utils/utils.jsx';
 
 import React from 'react';
 
@@ -25,7 +26,6 @@ export default class FileAttachmentList extends React.Component {
         if (this.props.fileInfos && this.props.fileInfos.length > 0) {
             for (let i = 0; i < Math.min(this.props.fileInfos.length, Constants.MAX_DISPLAY_FILES); i++) {
                 const fileInfo = this.props.fileInfos[i];
-
                 postFiles.push(
                     <FileAttachment
                         key={fileInfo.id}
@@ -33,6 +33,7 @@ export default class FileAttachmentList extends React.Component {
                         index={i}
                         handleImageClick={this.handleImageClick}
                         compactDisplay={this.props.compactDisplay}
+                        isSingle={false}
                     />
                 );
             }
@@ -50,7 +51,7 @@ export default class FileAttachmentList extends React.Component {
 
         return (
             <div>
-                <div className='post-image__columns'>
+                <div className={postFilesClass}>
                     {postFiles}
                 </div>
                 <ViewImageModal

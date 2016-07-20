@@ -71,6 +71,10 @@ export default class FileAttachment extends React.Component {
             if (type === 'image') {
                 let className = 'post-image';
 
+                if (this.props.isSingle) {
+                    className += '__single'
+                }
+
                 if (fileInfo.width < Constants.THUMBNAIL_WIDTH && fileInfo.height < Constants.THUMBNAIL_HEIGHT) {
                     className += ' small';
                 } else {
@@ -180,5 +184,7 @@ FileAttachment.propTypes = {
     // handler for when the thumbnail is clicked passed the index above
     handleImageClick: React.PropTypes.func,
 
-    compactDisplay: React.PropTypes.bool
+    compactDisplay: React.PropTypes.bool,
+
+    isSingle: React.PropTypes.bool
 };

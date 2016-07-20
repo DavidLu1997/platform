@@ -147,6 +147,7 @@ export default class PostBody extends React.Component {
                 <FileAttachmentListContainer
                     post={post}
                     compactDisplay={this.props.compactDisplay}
+                    height={'400px'}
                 />
             );
         }
