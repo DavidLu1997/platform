@@ -32,13 +32,13 @@ The information we collect from you may be used in the following ways:
 
 To alert you of updates designed to protect your system from newly discovered potential security attacks.
 
-To improve future versions of the Mattermost software for deployments with similar usage patterns as your installation — we continually strive to improve the performance, reliability and functionality of our product, and our efforts to do so are assisted the usage information and feedback we receive from you.
+To improve future versions of the Mattermost software for deployments with similar usage patterns as your installation — we continually strive to improve the performance, reliability and functionality of our product, and our efforts to do so are assisted by the usage information and feedback we receive from you.
 
 How do we protect your information? 
 
 Mattermost takes care to protect the information you provide as part of your use of the Mattermost software from misuse and unauthorized access or disclosure. These steps take into account the sensitivity of the information we collect, process and store, as well as the current state of technology. You may opt-out of the [Security Alerts (see link)](https://docs.mattermost.com/administration/config-settings.html#enable-security-alerts) and [Error and Diagnostics Reporting (see link)](https://docs.mattermost.com/administration/config-settings.html#enable-error-and-diagnostics) services any time from the System Console or via the configuration file, as described previously. Any information that we consider potentially sensitive is transmitted through encrypted channels and we follow generally accepted industry standards to protect the data collected by us, both during transmission and after we receive it. 
 
-Internally, we restrict access to all personally identifiable information we receive from You to our personnel that need access to the information in order to do their jobs and that are authorized to handle such information. Our staff is limited and all personnel are committed to adhere to our privacy and security policies. All personnel execute nondisclosure agreements, which provide explicit confidentiality protections. Any staff member who violates our privacy and/or security policies is subject to possible termination of contract and civil/criminal prosecution.
+Internally, we restrict access to all personally identifiable information we receive from you to our personnel that need access to the information in order to do their jobs and that are authorized to handle such information. Our staff is limited and all personnel are committed to adhere to our privacy and security policies. All personnel execute nondisclosure agreements, which provide explicit confidentiality protections. Any staff member who violates our privacy and/or security policies is subject to possible termination of contract and civil/criminal prosecution.
 
 Do we disclose any information to outside parties? 
 
