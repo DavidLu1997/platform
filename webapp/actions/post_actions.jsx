@@ -74,10 +74,11 @@ export function setUnreadPost(channelId, postId) {
     const post = PostStore.getPost(channelId, postId);
     const posts = PostStore.getVisiblePosts(channelId).posts;
     const currentChannel = ChannelStore.getCurrent();
-    var currentUsedId = UserStore.getCurrentId();
-    if (currentUsedId === post.user_id || PostUtils.isSystemMessage(post)) {
+    const channel = ChannelStore.get(channelId);
+    var currentUserId = UserStore.getCurrentId();
+    if (currentUserId === post.user_id || PostUtils.isSystemMessage(post)) {
         for (const otherPostId in posts) {
-            if (lastViewed < posts[otherPostId].create_at && currentUsedId !== posts[otherPostId].user_id && !PostUtils.isSystemMessage(posts[otherPostId])) {
+            if (lastViewed < posts[otherPostId].create_at && currentUserId !== posts[otherPostId].user_id && !PostUtils.isSystemMessage(posts[otherPostId])) {
                 lastViewed = posts[otherPostId].create_at;
             }
         }
@@ -99,22 +100,22 @@ export function setUnreadPost(channelId, postId) {
         ChannelStore.emitChange();
     } else {
         let unreadPosts = 0;
-        for (const otherPostId in posts) {
-            if (posts[otherPostId].create_at > lastViewed) {
-                unreadPosts += 1;
-            }
-        }
-
-        // Temporary workaround for DM channels having wrong unread values
-        if (currentChannel.type === Constants.DM_CHANNEL) {
-            unreadPosts = 0;
-        }
-
         const member = ChannelStore.getMember(channelId);
-        const channel = ChannelStore.get(channelId);
+
+        if (channel.type === Constants.DM_CHANNEL) {
+            member.mention_count++;
+            ownNewMessage = true;
+        } else {
+            for (const otherPostId in posts) {
+                if (posts[otherPostId].create_at > lastViewed) {
+                    unreadPosts += 1;
+                }
+            }
+            member.mention_count = 0;
+        }
+        
         member.last_viewed_at = lastViewed;
         member.msg_count = channel.total_msg_count - unreadPosts;
-        member.mention_count = 0;
         ChannelStore.setChannelMember(member);
         ChannelStore.setUnreadCount(channelId);
         AsyncClient.setLastViewedAt(lastViewed, channelId);
