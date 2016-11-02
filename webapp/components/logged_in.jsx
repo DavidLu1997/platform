@@ -84,11 +84,14 @@ export default class LoggedIn extends React.Component {
     }
 
     setupUser(user) {
-        // Update segment indentify
-        if (global.window.mm_config.SegmentDeveloperKey != null && global.window.mm_config.SegmentDeveloperKey !== '') {
+        // Update segment identify
+        if (global.window.mm_config.EnableDiagnostics === 'true') {
             global.window.analytics.identify(user.id, {
                 createdAt: user.create_at,
-                id: user.id
+                id: user.id,
+                email: '',
+                username: '',
+                name: ''
             });
         }
     }

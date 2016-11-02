@@ -2,6 +2,7 @@
 // See License.txt for license information.
 
 import request from 'superagent';
+import * as UserAgent from 'utils/user_agent.jsx';
 
 const HEADER_X_VERSION_ID = 'x-version-id';
 const HEADER_X_CLUSTER_ID = 'x-cluster-id';
@@ -956,6 +957,11 @@ export default class Client {
                     }
 
                     if (success) {
+                        this.track('api', 'api_users_login', {
+                            token: outer.token,
+                            operatingSystem: UserAgent.getOperatingSystem(),
+                            browser: UserAgent.getBrowser()
+                        });
                         success(data, res);
                     }
                 },
@@ -971,7 +977,11 @@ export default class Client {
             accept('application/json').
             end(this.handleResponse.bind(this, 'logout', success, error));
 
-        this.track('api', 'api_users_logout');
+        this.track('api', 'api_users_logout', {
+            token: this.token,
+            operatingSystem: UserAgent.getOperatingSystem(),
+            browser: UserAgent.getBrowser()
+        });
     }
 
     checkMfa(loginId, success, error) {

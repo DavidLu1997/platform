@@ -172,7 +172,8 @@ func main() {
 		}
 
 		setDiagnosticId()
-		go runSecurityAndDiagnosticsJob()
+		go runSecurityJob()
+		go runDiagnosticsJob()
 
 		if complianceI := einterfaces.GetComplianceInterface(); complianceI != nil {
 			complianceI.StartComplianceDailyJob()
@@ -248,7 +249,7 @@ func setDiagnosticId() {
 	}
 }
 
-func doSecurityAndDiagnostics() {
+func doSecurity() {
 	if *utils.Cfg.ServiceSettings.EnableSecurityFixAlert {
 		if result := <-api.Srv.Store.System().Get(); result.Err == nil {
 			props := result.Data.(model.StringMap)
@@ -338,7 +339,9 @@ func doSecurityAndDiagnostics() {
 			}
 		}
 	}
+}
 
+func doDiagnostics() {
 	if *utils.Cfg.LogSettings.EnableDiagnostics {
 		utils.SendGeneralDiagnostics()
 		sendServerDiagnostics()
@@ -381,9 +384,14 @@ func sendServerDiagnostics() {
 	})
 }
 
-func runSecurityAndDiagnosticsJob() {
-	doSecurityAndDiagnostics()
-	model.CreateRecurringTask("Security and Diagnostics", doSecurityAndDiagnostics, time.Hour*4)
+func runSecurityJob() {
+	doSecurity()
+	model.CreateRecurringTask("Security", doSecurity, time.Hour*4)
+}
+
+func runDiagnosticsJob() {
+	doDiagnostics()
+	model.CreateRecurringTask("Diagnostics", doDiagnostics, time.Hour*24)
 }
 
 func parseCmds() {

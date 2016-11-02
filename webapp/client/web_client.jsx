@@ -22,8 +22,25 @@ class WebClientClass extends Client {
     }
 
     track = (category, action, label, property, value) => {
+        const context = {
+            ip: '',
+            page: {
+                search: '',
+                title: ''
+            },
+            title: '',
+            traits: '',
+            url: ''
+        }
+
         if (global.window && global.window.analytics) {
-            global.window.analytics.track(action, {category, label, property, value});
+            global.window.analytics.track('events', {
+                action,
+                category,
+                label,
+                property,
+                value
+            }, context);
         }
     }
 

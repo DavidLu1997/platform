@@ -21,23 +21,11 @@ const (
 	PROP_DIAGNOSTIC_ACTIVE_USER_COUNT = "auc"
 	PROP_DIAGNOSTIC_UNIT_TESTS        = "ut"
 
-	TRACK_CONFIG_SERVICE      = "service"
-	TRACK_CONFIG_TEAM         = "team"
-	TRACK_CONFIG_SQL          = "sql"
-	TRACK_CONFIG_LOG          = "log"
-	TRACK_CONFIG_FILE         = "file"
-	TRACK_CONFIG_RATE         = "rate"
-	TRACK_CONFIG_EMAIL        = "email"
-	TRACK_CONFIG_PRIVACY      = "privacy"
-	TRACK_CONFIG_OAUTH        = "oauth"
-	TRACK_CONFIG_LDAP         = "ldap"
-	TRACK_CONFIG_COMPLIANCE   = "compliance"
-	TRACK_CONFIG_LOCALIZATION = "localization"
-	TRACK_CONFIG_SAML         = "saml"
+	TRACK_CONFIG = "config_settings"
 
 	TRACK_LICENSE  = "license"
 	TRACK_ACTIVITY = "activity"
-	TRACK_VERSION  = "version"
+	TRACK_VERSION  = "servers"
 )
 
 var client *analytics.Client
@@ -68,7 +56,7 @@ func SendDiagnostic(event string, properties map[string]interface{}) {
 }
 
 func trackConfig() {
-	SendDiagnostic(TRACK_CONFIG_SERVICE, map[string]interface{}{
+	SendDiagnostic(TRACK_CONFIG, map[string]interface{}{
 		"web_server_mode":                      *Cfg.ServiceSettings.WebserverMode,
 		"enable_security_fix_alert":            *Cfg.ServiceSettings.EnableSecurityFixAlert,
 		"enable_insecure_outgoing_connections": *Cfg.ServiceSettings.EnableInsecureOutgoingConnections,
@@ -82,9 +70,14 @@ func trackConfig() {
 		"restrict_custom_emoji_creation":       *Cfg.ServiceSettings.RestrictCustomEmojiCreation,
 		"enable_testing":                       Cfg.ServiceSettings.EnableTesting,
 		"enable_developer":                     *Cfg.ServiceSettings.EnableDeveloper,
+		"enable_multifactor_auth":              *Cfg.ServiceSettings.EnableMultifactorAuthentication,
+		"enable_oauth_service_provider":        Cfg.ServiceSettings.EnableOAuthServiceProvider,
+		"connection_security":                  *Cfg.ServiceSettings.ConnectionSecurity,
+		"lets_encrypt":                         *Cfg.ServiceSettings.UseLetsEncrypt,
+		"forward_80_to_443":                    *Cfg.ServiceSettings.Forward80To443,
 	})
 
-	SendDiagnostic(TRACK_CONFIG_TEAM, map[string]interface{}{
+	SendDiagnostic(TRACK_CONFIG, map[string]interface{}{
 		"enable_user_creation":                Cfg.TeamSettings.EnableUserCreation,
 		"enable_team_creation":                Cfg.TeamSettings.EnableTeamCreation,
 		"restrict_team_invite":                *Cfg.TeamSettings.RestrictTeamInvite,
@@ -92,13 +85,15 @@ func trackConfig() {
 		"restrict_private_channel_management": *Cfg.TeamSettings.RestrictPrivateChannelManagement,
 		"enable_open_server":                  *Cfg.TeamSettings.EnableOpenServer,
 		"enable_custom_brand":                 *Cfg.TeamSettings.EnableCustomBrand,
+		"restrict_direct_message":             *Cfg.TeamSettings.RestrictDirectMessage,
+		"max_channels_per_team":               *Cfg.TeamSettings.MaxChannelsPerTeam,
 	})
 
-	SendDiagnostic(TRACK_CONFIG_SQL, map[string]interface{}{
+	SendDiagnostic(TRACK_CONFIG, map[string]interface{}{
 		"driver_name": Cfg.SqlSettings.DriverName,
 	})
 
-	SendDiagnostic(TRACK_CONFIG_LOG, map[string]interface{}{
+	SendDiagnostic(TRACK_CONFIG, map[string]interface{}{
 		"enable_console":           Cfg.LogSettings.EnableConsole,
 		"console_level":            Cfg.LogSettings.ConsoleLevel,
 		"enable_file":              Cfg.LogSettings.EnableFile,
@@ -106,16 +101,18 @@ func trackConfig() {
 		"enable_webhook_debugging": Cfg.LogSettings.EnableWebhookDebugging,
 	})
 
-	SendDiagnostic(TRACK_CONFIG_FILE, map[string]interface{}{
+	SendDiagnostic(TRACK_CONFIG, map[string]interface{}{
 		"enable_public_links": Cfg.FileSettings.EnablePublicLink,
+		"driver_name":         Cfg.FileSettings.DriverName,
+		"amazons3_ssl":        *Cfg.FileSettings.AmazonS3SSL,
 	})
 
-	SendDiagnostic(TRACK_CONFIG_RATE, map[string]interface{}{
+	SendDiagnostic(TRACK_CONFIG, map[string]interface{}{
 		"enable_rate_limiter":    *Cfg.RateLimitSettings.Enable,
 		"vary_by_remote_address": Cfg.RateLimitSettings.VaryByRemoteAddr,
 	})
 
-	SendDiagnostic(TRACK_CONFIG_EMAIL, map[string]interface{}{
+	SendDiagnostic(TRACK_CONFIG, map[string]interface{}{
 		"enable_sign_up_with_email":    Cfg.EmailSettings.EnableSignUpWithEmail,
 		"enable_sign_in_with_email":    *Cfg.EmailSettings.EnableSignInWithEmail,
 		"enable_sign_in_with_username": *Cfg.EmailSettings.EnableSignInWithUsername,
@@ -124,38 +121,53 @@ func trackConfig() {
 		"connection_security":          Cfg.EmailSettings.ConnectionSecurity,
 		"send_push_notifications":      *Cfg.EmailSettings.SendPushNotifications,
 		"push_notification_contents":   *Cfg.EmailSettings.PushNotificationContents,
+		"enable_email_batching":        *Cfg.EmailSettings.EnableEmailBatching,
 	})
 
-	SendDiagnostic(TRACK_CONFIG_PRIVACY, map[string]interface{}{
+	SendDiagnostic(TRACK_CONFIG, map[string]interface{}{
 		"show_email_address": Cfg.PrivacySettings.ShowEmailAddress,
 		"show_full_name":     Cfg.PrivacySettings.ShowFullName,
 	})
 
-	SendDiagnostic(TRACK_CONFIG_OAUTH, map[string]interface{}{
-		"gitlab":    Cfg.GitLabSettings.Enable,
-		"google":    Cfg.GoogleSettings.Enable,
-		"office365": Cfg.Office365Settings.Enable,
+	SendDiagnostic(TRACK_CONFIG, map[string]interface{}{
+		"enable_gitlab":    Cfg.GitLabSettings.Enable,
+		"enable_google":    Cfg.GoogleSettings.Enable,
+		"enable_office365": Cfg.Office365Settings.Enable,
 	})
 
-	SendDiagnostic(TRACK_CONFIG_LDAP, map[string]interface{}{
-		"enable":                        *Cfg.LdapSettings.Enable,
-		"connection_security":           *Cfg.LdapSettings.ConnectionSecurity,
-		"skip_certificate_verification": *Cfg.LdapSettings.SkipCertificateVerification,
+	SendDiagnostic(TRACK_CONFIG, map[string]interface{}{
+		"enable_ldap":                        *Cfg.LdapSettings.Enable,
+		"ldap_connection_security":           *Cfg.LdapSettings.ConnectionSecurity,
+		"ldap_skip_certificate_verification": *Cfg.LdapSettings.SkipCertificateVerification,
 	})
 
-	SendDiagnostic(TRACK_CONFIG_COMPLIANCE, map[string]interface{}{
-		"enable":       *Cfg.ComplianceSettings.Enable,
-		"enable_daily": *Cfg.ComplianceSettings.EnableDaily,
+	SendDiagnostic(TRACK_CONFIG, map[string]interface{}{
+		"enable_compliance":       *Cfg.ComplianceSettings.Enable,
+		"enable_daily_compliance": *Cfg.ComplianceSettings.EnableDaily,
 	})
 
-	SendDiagnostic(TRACK_CONFIG_LOCALIZATION, map[string]interface{}{
+	SendDiagnostic(TRACK_CONFIG, map[string]interface{}{
 		"default_server_locale": *Cfg.LocalizationSettings.DefaultServerLocale,
 		"default_client_locale": *Cfg.LocalizationSettings.DefaultClientLocale,
 		"available_locales":     *Cfg.LocalizationSettings.AvailableLocales,
 	})
 
-	SendDiagnostic(TRACK_CONFIG_SAML, map[string]interface{}{
-		"enable": *Cfg.SamlSettings.Enable,
+	SendDiagnostic(TRACK_CONFIG, map[string]interface{}{
+		"enable_saml":         *Cfg.SamlSettings.Enable,
+		"enable_saml_encrypt": *Cfg.SamlSettings.Encrypt,
+		"enable_saml_verify":  *Cfg.SamlSettings.Verify,
+	})
+
+	SendDiagnostic(TRACK_CONFIG, map[string]interface{}{
+		"enable_cluster": *Cfg.ClusterSettings.Enable,
+	})
+
+	SendDiagnostic(TRACK_CONFIG, map[string]interface{}{
+		"sql_trace": Cfg.SqlSettings.Trace,
+	})
+
+	SendDiagnostic(TRACK_CONFIG, map[string]interface{}{
+		"enable_webrtc": *Cfg.WebrtcSettings.Enable,
 	})
 }
 
